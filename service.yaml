@@ -1,0 +1,13 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: malerator-service
+spec:
+  selector:
+    app: malerator # Selects pods with the label app: malerator
+  ports:
+    - protocol: TCP
+      port: 80 # The port the service will be exposed on externally
+      targetPort: 8000 # The port your Django application is listening on inside the container
+  type: LoadBalancer # Creates an AWS ELB (Elastic Load Balancer)
