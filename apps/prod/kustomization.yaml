@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: malerator-prod
 
-bases:
+resources:
   - ../base
 
 patchesStrategicMerge:

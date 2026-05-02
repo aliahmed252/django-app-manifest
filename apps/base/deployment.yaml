@@ -1,7 +1,79 @@
-gpiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-  - rollout.yaml
-  - service.yaml
-  - hpa.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: malerator-app
+  labels: 
+    app: malerator
+spec:
+  replicas: 2 # Start with 3 replicas for production availability
+  selector:
+    matchLabels:
+      app: malerator
+  template:
+    metadata:
+      labels:
+        app: malerator
+    spec:
+      containers:
+      - name: django-app
+        image: aliahmed2005/django_app:v1.1 # Replace with your actual Docker image and tag
+        ports:
+        - containerPort: 8000 # Default Django development server port. Adjust if using Gunicorn/Uvicorn with a different port.
+        resources:
+          requests:
+            cpu: "250m"       # Request 0.25 CPU core
+            memory: "256Mi"   # Request 256 MiB of RAM
+          limits:
+            cpu: "500m"       # Limit to 0.5 CPU core
+            memory: "512Mi"   # Limit to 512 MiB of RAM
+        env:
+        - name: ALLOWED_HOSTS
+          value: "*" # Ensure this matches your Django project's settings module
+        # - name: SECRET_KEY
+        #   valueFrom: # Using Kubernetes Secrets for sensitive data
+        #     secretKeyRef:
+        #       name: malerator-secrets # Name of the Kubernetes Secret to fetch
+        #       key: django-secret-key   # Key within the Secret
+        # - name: DEBUG
+        #   value: "false" # IMPORTANT: Set to 'false' for production environments
+        # - name: DB_HOST
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: malerator-secrets
+        #       key: db-host
+        # - name: DB_NAME
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: malerator-secrets
+        #       key: db-name
+        # - name: DB_USER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: malerator-secrets
+        #       key: db-user
+        # - name: DB_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: malerator-secrets
+        #       key: db-password
+        # Add any other necessary Django environment variables here (e.g., ALLOWED_HOSTS if not handled by Ingress/Service)
+        # livenessProbe:
+        #   httpGet:
+        #     path: /healthz # Assuming you have a /healthz endpoint in your Django app for health checks.
+        #     port: 8000
+        #   initialDelaySeconds: 30 # Give the app time to start
+        #   periodSeconds: 20
+        #   timeoutSeconds: 5
+        #   failureThreshold: 3
+        # readinessProbe:
+        #   httpGet:
+        #     path: /healthz # Using the same endpoint for simplicity; can be different.
+        #     port: 8000
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 15
+        #   timeoutSeconds: 5
+        #   failureThreshold: 3
+      # If your Django app needs to serve static files directly via WhiteNoise *within* the pod
+      # and you are not using a separate web server (like Nginx) or S3/CDN,
+      # ensure your Docker image is built to handle this correctly.
+      # For production, static files are often collected and served by an external service or a dedicated web server container.
