@@ -4,8 +4,12 @@ kind: Kustomization
 namespace: malerator-prod
 
 resources:
-  - ../base
+- ../base
 
 patchesStrategicMerge:
-  - patch-env.yaml
-  - patch-replicas.yaml
+- patch-env.yaml
+- patch-replicas.yaml
+images:
+- name: django_app
+  newName: aliahmed2005/django_app
+  newTag: f9402f257e895279b791f6256842602c4e60bf8f
