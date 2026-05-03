@@ -12,4 +12,4 @@ patchesStrategicMerge:
 images:
 - name: django_app
   newName: aliahmed2005/django_app
-  newTag: 17b6986268d7b4306d51777a76c93e3a43dd20f9
+  newTag: e434927f4bbf3ef8dd7168d831447947d6636269
