@@ -10,6 +10,6 @@ patchesStrategicMerge:
 - patch-env.yaml
 - patch-replicas.yaml
 images:
-- name: django_app
+- name: aliahmed2005/django_app
   newName: aliahmed2005/django_app
   newTag: e434927f4bbf3ef8dd7168d831447947d6636269
